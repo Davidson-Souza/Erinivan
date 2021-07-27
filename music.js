@@ -42,45 +42,73 @@ fritacaoList =
   9:"https://open.spotify.com/track/0Cjw7xWWGa2KKe8SVNy3FA?si=2fefc4a56aa74bab"
 }
 var queue = [];
-let stream, dispatcher;
+let stream, dispatcher = false, connection;
 module.exports =
 {
     next: async (connection) =>
     {
-        if(queue.length == 0) return ;
-        stream = await ytdl(queue.pop(), ydlsettings);   
-
+        if(queue.length == 0){ dispatcher = false; return ; }
+        
+        stream = await ytdl(queue.pop(), ydlsettings);
+        
         if(!stream)
             return; 
-        dispatcher = connection.play(stream, {seek:0, volume:0.1});
+        dispatcher = connection.play(stream, {seek:0, volume:0.5});
+    
         dispatcher.on("finish", () => module.exports.next(connection));
     },
     fritacao: async () => 
     {
-        module.exports.add("https://www.youtube.com/watch?v=bM7SZ5SBzyY&list=PLzkuLC6Yvumv_Rd5apfPRWEcjf9b1JRnq")
+        await module.exports.add("https://www.youtube.com/watch?v=bM7SZ5SBzyY&list=PLzkuLC6Yvumv_Rd5apfPRWEcjf9b1JRnq", true)
+    },
+    getCount: () =>
+    {
+        return queue.length;
     },
     clear: () =>
     {
         queue = [];
+        dispatcher.destroy();
+        dispatcher = false; 
+    },
+    isClear: () =>
+    {
+        return queue.length == 0;
+    },
+    isConnected: ( ) =>
+    {
+        return (dispatcher);
     },
     init: async (connection) =>
     {
-        connection.on('finish', async () => module.exports.next(connection)
-        )
-        .on('speaking', speaking => 
+        connection.on('finish', async () => module.exports.next(connection))
+                  .on('speaking', speaking => 
+                    {
+                        if (!speaking) connection.leave();
+                    });
+        return module.exports.next(connection).catch((e) =>
         {
-          if (!speaking) connection.leave();
-        });
-        module.exports.next(connection)
+            console.log("Error")
+        })
     },
-    add: async (url) =>
+    add: async (url, shuffle=false) =>
     {
+        if(url.length == 0 || url.indexOf("https://www.youtube.com/watch?v=") < 0) return false;
         if(url.indexOf("&list") < 0)
             return queue.push(url);
-        const playlist = await ytpl(url);
+        const playlist = await ytpl(url).catch((e) =>{ return false; });
         if(!playlist)
             return ;
         playlist.items.forEach((a,i) => queue.push (a.url.split("&list")[0]))
+        
+        if(shuffle)
+        {
+            for (let i = queue.length - 1; i > 0; i--) 
+            {
+                const j = Math.floor(Math.random() * (i + 1));
+                [queue[i], queue[j]] = [queue[j], queue[i]];
+            }
+        }
     },
     lofi: () =>
     {

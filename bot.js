@@ -2,16 +2,14 @@
 
 // Import the discord.js module
 const Discord = require('discord.js');
-const mine = require("./mine");
-const music = require("./music");
+const mine    = require("./mine");
+const music   = require("./music");
 
 // Create an instance of a Discord client
 const client = new Discord.Client({ partials: ['MESSAGE', 'CHANNEL', 'REACTION', 'USER'] });
 
 client.on('ready', () => {
-  console.log('I am ready!');
   client.user.setActivity(`Cala boca Pedro`);
-
 });
 
 // Create an event listener for messages
@@ -20,7 +18,8 @@ client.on('message', async message => {
   {
     message.react("👍")
     return ;
-  } 
+  }
+
   if(message.channel.name != '『🤖』comandos-bot') return ;
   
   if(message.content === "-minePara")
@@ -29,19 +28,34 @@ client.on('message', async message => {
     
     mine.stop();
   }
+  else if (message.content === "-proxima")
+  {
+    message.react("👍")	
+    music.next(await message.member.voice.channel.join());
+  }
+  else if (message.content === "-fila")
+  {
+    message.react("👍");
+    message.reply(`Existem ${music.getCount()} musicas na lista`)
+  }
+  else if (message.content === "-limpa")
+  {
+    message.react("👍");
+    music.clear();
+  }
   else if (message.content === "-mine")
   {
     message.react("👍")	
 
     mine.start(() =>  //onSuccess
     {
-      message.reply("Funcionando!!\n");
+      message.channel.send("Funcionando!!\n");
     }, () => //onExit
     {
-      message.reply("Fechado!\n");
+      message.channel.send("Fechado!\n");
     }, () =>  //onError
     {
-      message.reply("Deu erro aqui, quando der eu arrumo");
+      message.channel.send("Deu erro aqui, quando der eu arrumo");
     }, client);
   }
   else if(message.content == '-fritacao')
@@ -49,21 +63,25 @@ client.on('message', async message => {
     message.react("👍")	
 
     if (!message.member.voice.channel) {
-      message.reply('You need to join a voice channel first!');
+      message.reply('Você precisa se conectar a um canal de voz antes');
       return ;
     }
     await music.fritacao();
-    music.init(await message.member.voice.channel.join());
+
+    if(!music.isConnected())
+      music.init(await message.member.voice.channel.join());
   }
   else if (message.content === '-lofi') {
     message.react("👍")	
 
     if (!message.member.voice.channel) {
-      message.reply('You need to join a voice channel first!');
+      message.reply('Você precisa se conectar a um canal de voz antes');
       return ;
     }
-    music.lofi();
-    music.init(await message.member.voice.channel.join());
+    await music.lofi();
+    
+    if(!music.isConnected())
+      music.init(await message.member.voice.channel.join());
   }
   else if(message.content === '-chega')
   {
@@ -72,15 +90,17 @@ client.on('message', async message => {
     message.react("👍")	
   }
   else if(message.content.startsWith ('-toca'))
-  {
-    message.react("👍")	
+  { 
+    if (!message.member.voice.channel)
+      return message.reply('Você precisa se conectar a um canal de voz antes');
 
-    if (!message.member.voice.channel) {
-      message.reply('You need to join a voice channel first!');
-      return ;
-    }
-    music.add(message.content.replace("-toca ", ""));
-    music.next(await message.member.voice.channel.join());
+    if( !(await music.add(message.content.replace("-toca ", ""))) )
+      message.reply('Você digitou isso errado');
+
+    if(!music.isConnected())
+      return music.next(await message.member.voice.channel.join());
+    message.react("👍")	
+    
   }
   else if(message.content === '-ajuda')
   {                       
@@ -91,6 +111,7 @@ client.on('message', async message => {
 -minePara: Para o server\n\
 -lofi: Toca 10 horas de lofi\n\
 -chega: Para de tocar musica e sai do canal\n\
+-limpa: Limpa todas as músicas na lista e para de tocar\n\
 -toca url: Toca a música da url```"
 );
   }
