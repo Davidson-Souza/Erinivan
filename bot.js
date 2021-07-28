@@ -4,19 +4,36 @@
 const Discord = require('discord.js');
 const mine    = require("./mine");
 const music   = require("./music");
-
+const fs      = require('fs');
 // Create an instance of a Discord client
 const client = new Discord.Client({ partials: ['MESSAGE', 'CHANNEL', 'REACTION', 'USER'] });
 
+let playlists = {};
 client.on('ready', () => {
   client.user.setActivity(`Cala boca Pedro`);
 });
+
+try {
+  const file = fs.readFileSync("playlists.json"); 
+  JSON.parse(file, (k, v) =>
+  {
+    playlists[k] = v;
+  })
+} catch (error) {
+  console.log("No playlist found");
+}
 
 // Create an event listener for messages
 client.on('message', async message => {
   if(!message.guild && message.author.id != client.user.id)
   {
     message.react("👍")
+    if(message.content.startsWith("https://"));
+    {
+      playlists[message.author.id] = message.content;
+      fs.writeFileSync("playlists.json", JSON.stringify(playlists));
+    }
+    
     return ;
   }
 
@@ -27,6 +44,15 @@ client.on('message', async message => {
     message.react("👍")	
     
     mine.stop();
+  }
+  else if (message.content === "-me")
+  {
+    message.react("👍")	
+
+    if(playlists[message.author.id])
+      music.add(playlists[message.author.id]);
+    if(!music.isConnected())
+      music.init(await message.member.voice.channel.join());
   }
   else if (message.content === "-proxima")
   {
