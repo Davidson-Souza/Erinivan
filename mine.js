@@ -17,7 +17,9 @@ module.exports =
       } else if (data.includes("Disconnected"))
       {
         players -= 1;
-        if(players == 0){ setInterval(() =>
+        if(players == 0)
+        {
+          setTimeout(() =>
           {
             stop();
           }, 20000)}
@@ -40,6 +42,10 @@ module.exports =
       client.user.setActivity(`Cala boca Pedro`);
       onClose();
     });
+  },
+  getAddress: () =>
+  {
+    return process.env.HOST
   },
   stop: async () =>
   {

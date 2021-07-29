@@ -23,7 +23,7 @@ ydlsettings =
   restrictfilenames: true,
   noplaylist: true,
   nocheckcertificate: true,
-  ignoreerrors: false,
+  ignoreerrors: true,
   logtostderr: false,
   quiet: true,
   no_warnings: true,
@@ -93,8 +93,8 @@ module.exports =
     },
     add: async (url, shuffle=false) =>
     {
-        if(url.length == 0 || url.indexOf("https://www.youtube.com/watch?v=") < 0) return false;
-        if(url.indexOf("&list") < 0)
+        if(url.length == 0 || url.indexOf("https://www.youtube.com/") < 0) return false;
+        if(url.indexOf("list") < 0)
             return queue.push(url);
         const playlist = await ytpl(url).catch((e) =>{ return false; });
         if(!playlist)
@@ -114,5 +114,10 @@ module.exports =
     {
         for(let i in lofiList)
             queue.push(lofiList[i]);
+        for (let i = queue.length - 1; i > 0; i--) 
+        {
+            const j = Math.floor(Math.random() * (i + 1));
+            [queue[i], queue[j]] = [queue[j], queue[i]];
+        }
     }
 }
