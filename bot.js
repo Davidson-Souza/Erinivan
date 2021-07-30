@@ -52,6 +52,7 @@ client.on('message', async message => {
     msgCount[message.author.username]+= 1;
   else
     msgCount[message.author.username] = 1;
+    /**@todo: fazer isso periodicamente, e não a cada mensagem */
   fs.writeFileSync("count.json", JSON.stringify(msgCount));
   if(message.channel.name != '『🤖』comandos-bot') 
   {
