@@ -104,7 +104,6 @@ client.on('message', async message => {
   else if (message.content === "-mine")
   {
     message.react("👍")	
-
     const mineTask = await scheduler.schedule(mine.periodic, "* * * * * *");
     if(!(await mine.start(message.channel, client, mineTask))) return message.channel.send("O servidor está off");
     

@@ -39,7 +39,6 @@ module.exports =
   },
   getAddress: async () =>
   {
-    console.log(isRunning)
     if(!isRunning) return ("O servidor esta off");
     const res = await client.get(`/getAddress`);
     return res.data.res.host;
