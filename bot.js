@@ -20,10 +20,11 @@ client.on('message', async message => {
     message.react("👍")
     if(message.content.startsWith("https://"));
     {
-      scheduler.updatePlaylist(message.content, message.author.id);
+      commands.updatePlaylist(message);
     }
     return ;
   }
+  commands.messageInc(message.author.username);
 
   if(message.channel.name != '『🤖』comandos-bot') 
   {
@@ -34,8 +35,9 @@ client.on('message', async message => {
     }
     return ;
   }
-  commands.messageInc(message.author.username);
+
   const { command, args } = parser.parseMessage(message.content);
+  
   if(command && commands[command])
     commands[command](message, args);
 });

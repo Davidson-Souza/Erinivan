@@ -9,6 +9,10 @@ module.exports =
         if(this[command])
             this[command](message, args);
     },
+    updatePlaylist: () =>
+    {
+        scheduler.updatePlaylist(message.content, message.author.id);
+    },
     messageInc: (username) =>
     {
         scheduler.updateCount(username)
