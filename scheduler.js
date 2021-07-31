@@ -1,19 +1,23 @@
-const cron    = require("node-cron");
+const cron = require('node-cron');
 const fs      = require("fs");
 
 
 let internalValues = 
 {
-    playlists = {},
-    msgCount = {}
+    playlists:{},
+    msgCount: {}
 }
 
-cron.schedule("* * * *", () =>
+// Save each hour
+cron.schedule('0 0 * * *', () =>
 {
+    console.log("Saving playlists");
     fs.writeFileSync("playlists.json", JSON.stringify(internalValues.playlists));
 });
-cron.schedule("* * * *", () =>
+// Save each minute
+cron.schedule('0 * * * *', () =>
 {
+    console.log("Saving message count")
     fs.writeFileSync("count.json", JSON.stringify(internalValues.msgCount));
 });
 
@@ -64,4 +68,3 @@ module.exports =
         return internalValues.playlists;
     }
 }
-cron.schedule()
