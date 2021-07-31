@@ -1,15 +1,15 @@
 'use strict'
 
 // Import the discord.js module
-const Discord = require('discord.js');
-const fs      = require("fs");
-const mine    = require("./mine");
-const music   = require("./music");
-const sched   = require("./scheduler");
+const Discord   = require('discord.js');
+const fs        = require("fs");
+const mine      = require("./mine");
+const music     = require("./music");
+const scheduler = require("./scheduler");
 
 // Create an instance of a Discord client
 const client = new Discord.Client({ partials: ['MESSAGE', 'CHANNEL', 'REACTION', 'USER'] });
-
+let mineTask;
 client.on('ready', () => {
   client.user.setActivity(`Cala boca Pedro`);
 });
@@ -21,11 +21,11 @@ client.on('message', async message => {
     message.react("👍")
     if(message.content.startsWith("https://"));
     {
-      sched.updatePlaylist(message.content, message.author.id);
+      scheduler.updatePlaylist(message.content, message.author.id);
     }
     return ;
   }
-  sched.updateCount(message.author.username);
+  scheduler.updateCount(message.author.username);
 
   if(message.channel.name != '『🤖』comandos-bot') 
   {
@@ -47,7 +47,7 @@ client.on('message', async message => {
   else if (message.content === "-rank")
   {
     let msg = "", i = 1, part = [];
-    const msgCount = sched.getCount();
+    const msgCount = scheduler.getCount();
 
     for(let key in msgCount)
     {
@@ -68,16 +68,19 @@ client.on('message', async message => {
   }
   else if (message.content.startsWith("-ip"))
   {
-    message.reply(mine.getAddress());
+    message.react("👍")	
+
+    message.reply(await mine.getAddress());
   }
   else if (message.content.startsWith("-me"))
   {
     let shuffle = false;
     message.react("👍")	
-    if(message.content.indexOf("a"))
+    if(message.content.indexOf("a") > 0)
       shuffle = true;
-    if(sched.getPlaylist[message.author.id])
-      await music.add(sched.getPlaylist[message.author.id], shuffle);
+    const playlist = await scheduler.getPlaylist(message.author.id);
+    if(playlist)
+      await music.add(playlist, shuffle);
     if(!music.isConnected())
       music.init(await message.member.voice.channel.join());
   }
@@ -101,16 +104,10 @@ client.on('message', async message => {
   {
     message.react("👍")	
 
-    mine.start(() =>  //onSuccess
-    {
-      message.channel.send("Funcionando!!\n");
-    }, () => //onExit
-    {
-      message.channel.send("Fechado!\n");
-    }, () =>  //onError
-    {
-      message.channel.send("Deu erro aqui, quando der eu arrumo");
-    }, client);
+    if(!(await mine.start(message.channel, client))) return message.channel.send("O servidor está off");
+    mineTask = await scheduler.schedule(mine.periodic, "* * * *");
+    if(!mineTask) return message.channel.send("Erro interno!");
+    message.channel.send("Vou ver e te aviso");
   }
   else if(message.content == '-fritacao')
   {

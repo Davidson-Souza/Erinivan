@@ -48,6 +48,12 @@ try
 
 module.exports = 
 {
+    schedule: async (job, timestring) =>
+    {
+        if(job)
+            return await cron.schedule(timestring, job);
+        return false;
+    },
     updateCount: (user) =>
     {
         if(internalValues.msgCount[user])
@@ -65,6 +71,6 @@ module.exports =
     },
     getPlaylist: (user) =>
     {
-        return internalValues.playlists;
+        return internalValues.playlists[user];
     }
 }
