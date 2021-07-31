@@ -2,7 +2,7 @@ var isRunning = false, players = 0, channel, discordClient;
 const axios = require('axios').default;
 const client = axios.create(
 {
-  baseURL:"http://localhost:8080"
+  baseURL:`${process.env.MINE}`
 });
 
 module.exports = 
