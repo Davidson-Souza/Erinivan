@@ -2,7 +2,7 @@ var isRunning = false, players = 0, channel, discordClient, task;
 const axios = require('axios').default;
 const client = axios.create(
 {
-  baseURL:`${process.env.MINE}`
+  baseURL:`http://192.168.42.13:8080`
 });
 
 module.exports = 
@@ -12,27 +12,30 @@ module.exports =
     const res = await client.get(`/start`).catch(e => {return false});
     if (!res) return false
     channel = ch;
-    discordClient = dc
+    discordClient = dc.user.setActivity
     task = tsk;
     return res.data.ok;
   },
   periodic: async () =>
   {
-    if(!isRunning) return await this.isOpen(discordClient);
-
     const res = await client.get("/status");
-    
-    if(!res.data || !res.data.ok) return;
-    if(!res.data.res.isRunning)
+    if(!res || !res.data || !res.data.ok) return;
+    if(res.data.res.isRunning == -1 && isRunning == true)
     {
       isRunning = false;
       channel.send("O servidor esta off");
-      discordClient.user.setActivity('Cala boca pedro');
-      if(task && task.destroy)
+      if(task)
         task.destroy();
       return false;
     }
-    discordClint.user.setActivity(`${res.data.res.host}:${res.data.res.players}`)
+    if(res.data.res.isRunning == 1)
+    {
+      if(!isRunning)
+      {
+        channel.send("Rodando")
+        isRunning = true;
+      } 
+    }
   },
   getAddress: async () =>
   {
@@ -40,15 +43,6 @@ module.exports =
     if(!isRunning) return ("O servidor esta off");
     const res = await client.get(`/getAddress`);
     return res.data.res.host;
-  },
-  isOpen: async () =>
-  {
-    const res = await client.get("/isOpen");
-    if(!isRunning)
-    {
-      channel.send("Rodando");
-    }
-    return res.data.res;
   },
   stop: async () =>
   {

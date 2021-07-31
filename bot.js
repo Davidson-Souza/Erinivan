@@ -105,7 +105,7 @@ client.on('message', async message => {
   {
     message.react("👍")	
 
-    const mineTask = await scheduler.schedule(mine.periodic, "*/30 * * * * *");
+    const mineTask = await scheduler.schedule(mine.periodic, "* * * * * *");
     if(!(await mine.start(message.channel, client, mineTask))) return message.channel.send("O servidor está off");
     
     if(!mineTask) return message.channel.send("Erro interno!");
