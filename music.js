@@ -89,7 +89,7 @@ module.exports =
                     });
         return module.exports.next(connection).catch((e) =>
         {
-            console.log("Error")
+            console.log(e)
         })
     },
     add: async (url, shuffle=false) =>
