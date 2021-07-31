@@ -2,39 +2,19 @@
 
 // Import the discord.js module
 const Discord = require('discord.js');
+const fs      = require("fs");
 const mine    = require("./mine");
 const music   = require("./music");
-const fs      = require('fs');
+const sched   = require("./scheduler");
 
 // Create an instance of a Discord client
 const client = new Discord.Client({ partials: ['MESSAGE', 'CHANNEL', 'REACTION', 'USER'] });
 
-let playlists = {}, msgCount = {};
 client.on('ready', () => {
   client.user.setActivity(`Cala boca Pedro`);
 });
 
-try {
-  const file = fs.readFileSync("playlists.json"); 
-  JSON.parse(file, (k, v) =>
-  {
-    if(k)
-      playlists[k] = v;
-  })
-} catch (error) {
-  console.log("No playlist found");
-}
 
-try {
-  const file = fs.readFileSync("count.json"); 
-  JSON.parse(file, (k, v) =>
-  {
-    if(k)
-      msgCount[k] = v;
-  })
-} catch (error) {
-  console.log("No count found");
-}
 
 // Create an event listener for messages
 client.on('message', async message => {
@@ -43,17 +23,13 @@ client.on('message', async message => {
     message.react("👍")
     if(message.content.startsWith("https://"));
     {
-      playlists[message.author.id] = message.content;
-      fs.writeFileSync("playlists.json", JSON.stringify(playlists));
+      sched.updatePlaylist(message.content, message.author.id);
     }
     return ;
   }
-  if(msgCount[message.author.username])
-    msgCount[message.author.username]+= 1;
-  else
-    msgCount[message.author.username] = 1;
-    /**@todo: fazer isso periodicamente, e não a cada mensagem */
-  fs.writeFileSync("count.json", JSON.stringify(msgCount));
+  sched.updateCount(message.author.username);
+
+  /**@todo: fazer isso periodicamente, e não a cada mensagem */
   if(message.channel.name != '『🤖』comandos-bot') 
   {
     if(message.content.startsWith("-"))
@@ -74,6 +50,8 @@ client.on('message', async message => {
   else if (message.content === "-rank")
   {
     let msg = "", i = 1, part = [];
+    const msgCount = sched.getCount();
+
     for(let key in msgCount)
     {
       part.push({key:key, count:msgCount[key]});
@@ -101,8 +79,8 @@ client.on('message', async message => {
     message.react("👍")	
     if(message.content.indexOf("a"))
       shuffle = true;
-    if(playlists[message.author.id])
-      await music.add(playlists[message.author.id], shuffle);
+    if(sched.getPlaylist[message.author.id])
+      await music.add(sched.getPlaylist[message.author.id], shuffle);
     if(!music.isConnected())
       music.init(await message.member.voice.channel.join());
   }
