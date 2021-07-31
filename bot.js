@@ -1,4 +1,3 @@
-'use strict';
 'use strict'
 
 // Import the discord.js module
@@ -28,7 +27,6 @@ client.on('message', async message => {
   }
   sched.updateCount(message.author.username);
 
-  /**@todo: fazer isso periodicamente, e não a cada mensagem */
   if(message.channel.name != '『🤖』comandos-bot') 
   {
     if(message.content.startsWith("-"))
