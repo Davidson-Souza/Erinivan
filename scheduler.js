@@ -48,6 +48,11 @@ try
 
 module.exports = 
 {
+    unschedule: async (job) =>
+    {   
+        if(job && job.destroy)
+            job.destroy();
+    },
     schedule: async (job, timestring) =>
     {
         if(job)

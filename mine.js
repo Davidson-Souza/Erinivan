@@ -1,4 +1,4 @@
-var isRunning = false, players = 0, channel, discordClient;
+var isRunning = false, players = 0, channel, discordClient, task;
 const axios = require('axios').default;
 const client = axios.create(
 {
@@ -7,12 +7,13 @@ const client = axios.create(
 
 module.exports = 
 {
-  start: async (ch, dc) =>
+  start: async (ch, dc, tsk) =>
   {
     const res = await client.get(`/start`).catch(e => {return false});
     if (!res) return false
     channel = ch;
     discordClient = dc
+    task = tsk;
     return res.data.ok;
   },
   periodic: async () =>
@@ -26,7 +27,9 @@ module.exports =
     {
       isRunning = false;
       channel.send("O servidor esta off");
-      discordClient.user.setActivity('Cala boca pedro')
+      discordClient.user.setActivity('Cala boca pedro');
+      if(task && task.destroy)
+        task.destroy();
       return false;
     }
     discordClint.user.setActivity(`${res.data.res.host}:${res.data.res.players}`)

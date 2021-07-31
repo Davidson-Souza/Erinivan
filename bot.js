@@ -9,10 +9,11 @@ const scheduler = require("./scheduler");
 
 // Create an instance of a Discord client
 const client = new Discord.Client({ partials: ['MESSAGE', 'CHANNEL', 'REACTION', 'USER'] });
-let mineTask;
+
 client.on('ready', () => {
   client.user.setActivity(`Cala boca Pedro`);
 });
+
 
 // Create an event listener for messages
 client.on('message', async message => {
@@ -104,8 +105,9 @@ client.on('message', async message => {
   {
     message.react("👍")	
 
-    if(!(await mine.start(message.channel, client))) return message.channel.send("O servidor está off");
-    mineTask = await scheduler.schedule(mine.periodic, "* * * *");
+    const mineTask = await scheduler.schedule(mine.periodic, "* * * *");
+    if(!(await mine.start(message.channel, client, mineTask))) return message.channel.send("O servidor está off");
+    
     if(!mineTask) return message.channel.send("Erro interno!");
     message.channel.send("Vou ver e te aviso");
   }
