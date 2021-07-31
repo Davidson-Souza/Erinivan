@@ -68,7 +68,8 @@ module.exports =
     clear: () =>
     {
         queue = [];
-        dispatcher.destroy();
+        if(dispatcher && dispatcher.destroy)
+            dispatcher.destroy();
         dispatcher = false; 
     },
     isClear: () =>
