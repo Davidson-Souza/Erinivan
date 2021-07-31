@@ -1,4 +1,5 @@
 'use strict';
+'use strict'
 
 // Import the discord.js module
 const Discord = require('discord.js');
@@ -13,8 +14,6 @@ const client = new Discord.Client({ partials: ['MESSAGE', 'CHANNEL', 'REACTION',
 client.on('ready', () => {
   client.user.setActivity(`Cala boca Pedro`);
 });
-
-
 
 // Create an event listener for messages
 client.on('message', async message => {
