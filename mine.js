@@ -1,4 +1,4 @@
-var isRunning = false, players = 0, channel, discordClient, task;
+var isRunning = false, players = 0, channel, task;
 const axios = require('axios').default;
 const client = axios.create(
 {
@@ -7,12 +7,11 @@ const client = axios.create(
 
 module.exports = 
 {
-  start: async (ch, dc, tsk) =>
+  start: async (ch, tsk) =>
   {
     const res = await client.get(`/start`).catch(e => {return false});
     if (!res) return false
     channel = ch;
-    discordClient = dc.user.setActivity
     task = tsk;
     return res.data.ok;
   },
