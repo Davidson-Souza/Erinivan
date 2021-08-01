@@ -9,7 +9,7 @@ module.exports =
         if(this[command])
             this[command](message, args);
     },
-    updatePlaylist: () =>
+    updatePlaylist: (message) =>
     {
         scheduler.updatePlaylist(message.content, message.author.id);
     },
