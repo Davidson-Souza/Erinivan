@@ -4,6 +4,7 @@ const scheduler = require("./scheduler");
 
 module.exports =
 {
+    schedule: scheduler.schedule,
     exec: (message, command, args) =>
     {
         if(this[command])
