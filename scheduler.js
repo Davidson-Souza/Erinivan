@@ -9,7 +9,7 @@ let internalValues =
 }
 console.log("Stating...")
 // Save each hour
-cron.schedule('* 0 * * * *', () =>
+cron.schedule('59 * * * * *', () =>
 {
     console.log("Saving playlists");
     fs.writeFileSync("playlists.json", JSON.stringify(internalValues.playlists));

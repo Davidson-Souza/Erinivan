@@ -1,7 +1,8 @@
 const ytdl = require("ytdl-core")
 const ytpl = require('ytpl');
-
+const fs   = require('fs');
 /**@todo: Mover isso para um arquivo externo */
+
 const lofiList = 
 {
   1:"https://www.youtube.com/watch?v=_DYAnU3H7RI",
@@ -48,14 +49,28 @@ module.exports =
     next: async (connection) =>
     {
         if(queue.length == 0){ dispatcher = false; return ; }
-        
-        stream = await ytdl(queue.pop(), ydlsettings);
-        
-        if(!stream)
-            return; 
-        dispatcher = connection.play(stream, {seek:0, volume:0.5});
+        const file = queue.pop();
+
+        if(file.includes("youtube"))
+        {
+            console.log(file)
+            stream = await ytdl(file, ydlsettings);
+
+            if(!stream)
+                return; 
+            dispatcher = connection.play(stream, {seek:0, volume:0.5});
+        }
+        else
+            dispatcher = connection.play(file, {seek:0, volume:0.5});
+
         dispatcher.on("finish", () => module.exports.next(connection));
     },
+    playFromFile: async (file) =>
+    {
+        if(fs.existsSync(file))
+            queue.push(file);
+    },
+
     pause: () =>
     {
         dispatcher.pause();

@@ -36,7 +36,6 @@ client.on('message', async message => {
     }
     return ;
   }
-
   const { command, args } = parser.parseMessage(message.content);
   
   if(command && commands[command])
