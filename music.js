@@ -54,8 +54,15 @@ module.exports =
         if(!stream)
             return; 
         dispatcher = connection.play(stream, {seek:0, volume:0.5});
-    
         dispatcher.on("finish", () => module.exports.next(connection));
+    },
+    pause: () =>
+    {
+        dispatcher.pause();
+    },
+    restart: () =>
+    {
+        dispatcher.resume();
     },
     fritacao: async () => 
     {

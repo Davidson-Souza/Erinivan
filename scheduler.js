@@ -7,15 +7,16 @@ let internalValues =
     playlists:{},
     msgCount: {}
 }
-
+console.log("Stating...")
 // Save each hour
-cron.schedule('0 0 * * *', () =>
+cron.schedule('* 0 * * * *', () =>
 {
     console.log("Saving playlists");
     fs.writeFileSync("playlists.json", JSON.stringify(internalValues.playlists));
 });
+
 // Save each minute
-cron.schedule('0 * * * *', () =>
+cron.schedule('59 * * * * *', () =>
 {
     console.log("Saving message count")
     fs.writeFileSync("count.json", JSON.stringify(internalValues.msgCount));

@@ -91,9 +91,32 @@ module.exports =
         if(!mineTask) return message.channel.send("Erro interno!");
         message.channel.send("Vou ver e te aviso");
     },
+    pausa: (message, args) =>
+    {
+        message.react("👍")
+
+        if(!message.member.voice.channel)
+        {
+            message.reply("Você precisa se conectar a um canal de voz antes")
+            return ;
+        }
+
+        music.pause();
+    },
+    continua: (message, args) =>
+    {
+        message.react("👍")
+
+        if(!message.member.voice.channel)
+        {
+            message.reply("Você precisa se conectar a um canal de voz antes")
+            return ;
+        }
+        music.restart();
+    },
     fritacao: async (message, args) =>
     {
-        message.react("👍")	
+        message.react("👍")
 
         if (!message.member.voice.channel) {
             message.reply('Você precisa se conectar a um canal de voz antes');

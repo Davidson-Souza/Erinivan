@@ -24,6 +24,7 @@ client.on('message', async message => {
     }
     return ;
   }
+  
   commands.messageInc(message.author.username);
 
   if(message.channel.name != '『🤖』comandos-bot') 
