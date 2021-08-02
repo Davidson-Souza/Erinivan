@@ -34,6 +34,21 @@ module.exports =
             music.init(await message.member.voice.channel.join());
 
     },
+    sobeBalao: async (message, args) =>
+    {
+        message.react("👍")
+
+        if (!message.member.voice.channel) {
+            message.reply('Você precisa se conectar a um canal de voz antes');
+            return ;
+        }
+
+        music.playFromFile("./rapaiz.mp3")
+
+        if(!music.isConnected())
+            music.init(await message.member.voice.channel.join());
+
+    },
     minePara: (message, args) =>
     {
         message.react("👍")	

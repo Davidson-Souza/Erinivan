@@ -49,7 +49,8 @@ module.exports =
     next: async (connection) =>
     {
         if(queue.length == 0){ dispatcher = false; return ; }
-        const file = queue.pop();
+        
+	const file = queue.pop();
 
         if(file.includes("youtube"))
         {
@@ -58,7 +59,7 @@ module.exports =
 
             if(!stream)
                 return; 
-            dispatcher = connection.play(stream, {seek:0, volume:0.5});
+            dispatcher = connection.play(stream, {seek:0, volume:1});
         }
         else
             dispatcher = connection.play(file, {seek:0, volume:0.5});
