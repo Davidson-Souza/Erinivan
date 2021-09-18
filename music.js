@@ -122,7 +122,7 @@ module.exports =
             return queue.push(url);
         const playlist = await ytpl(url).catch((e) =>{ return false; });
         if(!playlist)
-            return ;
+            return false;
         playlist.items.forEach((a,i) => queue.push (a.url.split("&list")[0]))
         
         if(shuffle)
@@ -133,6 +133,7 @@ module.exports =
                 [queue[i], queue[j]] = [queue[j], queue[i]];
             }
         }
+        return true;
     },
     lofi: () =>
     {
