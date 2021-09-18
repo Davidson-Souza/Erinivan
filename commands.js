@@ -186,7 +186,7 @@ module.exports =
         if (!message.member.voice.channel)
             return message.reply('Você precisa se conectar a um canal de voz antes');
 
-        if( !(await music.add(args[0])) )
+        if( !(await music.add(args[0], args[1])) )
             message.reply('Tipo de playlist não suportado');
 
         if(!music.isConnected())
