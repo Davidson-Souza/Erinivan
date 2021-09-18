@@ -187,7 +187,7 @@ module.exports =
             return message.reply('Você precisa se conectar a um canal de voz antes');
 
         if( !(await music.add(args[0])) )
-            message.reply('Você digitou isso errado');
+            message.reply('Tipo de playlist não suportado');
 
         if(!music.isConnected())
             return music.next(await message.member.voice.channel.join());
@@ -207,7 +207,9 @@ module.exports =
 -lofi: Toca 10 horas de lofi\n\
 -chega: Para de tocar musica e sai do canal\n\
 -limpa: Limpa todas as músicas na lista e para de tocar\n\
--toca url: Toca a música da url```"
+-toca url: Toca a música da url\n\
+-pausa: pausa uma música\n\
+-continua: continua tocando uma música que foi pausada```"
 );
     }
 };
