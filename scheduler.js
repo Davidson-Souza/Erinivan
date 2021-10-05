@@ -10,7 +10,7 @@ let internalValues =
 }
 console.log("Stating...")
 // Save each hour
-/*
+
 cron.schedule('00 59 * * * *', () =>
 {
     console.log("Saving playlists");
@@ -25,11 +25,11 @@ cron.schedule('00 59 * * * *', () =>
 });
 
 // Save each hour
-cron.schedule('59 * * * * *', () =>
+cron.schedule('00 59 * * * *', () =>
 {
     console.log("Saving message count")
     fs.writeFileSync("grades.json", JSON.stringify(internalValues.grades));
-});*/
+});
 
 try 
 {
@@ -101,7 +101,7 @@ module.exports =
             if (internalValues.grades.binds[g] == grade)
                 return false;
         }
-        
+
         internalValues.grades.binds[emoji] = grade;
         fs.writeFileSync("grades.json", JSON.stringify(internalValues.grades));
         return true;
