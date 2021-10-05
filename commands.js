@@ -102,6 +102,41 @@ module.exports =
         message.react("👍")	
         music.next(await message.member.voice.channel.join());
     },
+    addGrade: async (reaction, user, client) => {
+        const grade = await scheduler.getGradeByEmoji(reaction);
+        
+        if(!grade) return user.send("Matéria inexistente!");
+        const guild = await client.guilds.cache.get("644248934834896946")
+
+
+        if (await scheduler.addGradeByUser(user.username, grade) > 0) {
+            const role = await guild.roles.cache.find((v, k) => {
+                if(v.name === grade) return v;
+              })
+            await guild.members.cache.find((v, k) => {
+                if (v.id == user.id) return v.roles.add(role);
+            });
+
+            return user.send((`Você se increveu na matéria: ${grade}`)) 
+        }
+        user.send("Você já se increveu nessa matéria")
+      },
+    listGrades: () => {
+        return scheduler.listGrades();
+    },
+    newGrade: async (client, name, perm) => {
+        let emoji;
+        do {
+            emoji = await client.emojis.cache.random()
+        }
+        while (!scheduler.getGradeByEmoji(emoji))
+        
+        if (!(await scheduler.newGrade(name, emoji)))
+            return false;
+
+        await client.guilds.cache.get("644248934834896946").roles.create({data:{ name: `${name}`, permissions: [perm] }});
+        return emoji;
+    },
     fila: async (message, args) =>
     {
         message.react("👍");
