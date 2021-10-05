@@ -10,7 +10,7 @@ const client = new Discord.Client({ partials: ['MESSAGE', 'CHANNEL', 'REACTION',
 let msg;
 
 client.on('ready', async () => {
-  const channel_old = await client.channels.cache.find((channel, key) => {
+  /*const channel_old = await client.channels.cache.find((channel, key) => {
     if (channel.name === "matérias") return channel;
   });
   if(channel_old) channel_old.delete();
@@ -39,7 +39,7 @@ Use as reações para escolher a sua matéria:\n
 ${txt}
 Se tiver faltando matéria, só mandar uma dm para o bot com o nome da matéria, sem mais nada. Ele vai colocar exatamente o que você digitar
 `);
-
+*/
   client.user.setActivity(`Cala boca Pedro`);
 });
 
@@ -52,11 +52,11 @@ client.on('message', async message => {
     {
       return commands.updatePlaylist(message);
     }
-
+    
     const emoji = await commands.newGrade(client, message.content, Discord.Permissions.DEFAULT);
     if(!emoji) return message.reply("Essa matéria já existe!");
 
-    msg.edit(msg.content + `\n${emoji} - ${message.content}`);
+    //msg.edit(msg.content + `\n${emoji} - ${message.content}`);
 
     return ;
   }

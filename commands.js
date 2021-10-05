@@ -128,10 +128,8 @@ module.exports =
         let emoji = undefined;
         do {
             emoji = await client.emojis.cache.random()
-            console.log(emoji.name);
         }
         while (await scheduler.getGradeByEmoji(emoji))
-        
         if (!(await scheduler.newGrade(name, emoji)))
             return false;
 

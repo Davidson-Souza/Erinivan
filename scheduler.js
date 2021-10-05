@@ -101,7 +101,6 @@ module.exports =
             if (internalValues.grades.binds[g] == grade)
                 return false;
         }
-
         internalValues.grades.binds[emoji] = grade;
         fs.writeFileSync("grades.json", JSON.stringify(internalValues.grades));
         return true;
