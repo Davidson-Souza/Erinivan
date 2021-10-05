@@ -74,7 +74,7 @@ client.on('message', async message => {
     commands[command](message, args);
 });
 client.on("messageReactionAdd", (reaction, user) => {
-  if (reaction.message.author.id == client.user.id /*&& reaction.message.channel.name === "materias"*/)
+  if (reaction.message.author.id == client.user.id && msg.id === reaction.message.id)
     commands.addGrade(reaction.emoji, user, client)
 })
 
