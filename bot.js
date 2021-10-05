@@ -14,12 +14,17 @@ client.on('ready', async () => {
     if (channel.name === "matérias") return channel;
   });
   if(channel_old) channel_old.delete();
+  const IF = await client.guilds.cache.get("644248934834896946").roles.cache.find((v, k) => {if (v.name == "IF") return v; });
   
   const channel = await client.guilds.cache.get("644248934834896946").channels.create("Matérias", {
     permissionOverwrites: [
       {
         id: client.guilds.cache.get("644248934834896946").roles.everyone,
         deny:[Discord.Permissions.FLAGS.VIEW_CHANNEL]
+      },
+      {
+        id: IF.id,
+        allow: [Discord.Permissions.FLAGS.VIEW_CHANNEL]
       }
     ]
   })
