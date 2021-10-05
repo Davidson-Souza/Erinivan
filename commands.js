@@ -125,11 +125,12 @@ module.exports =
         return scheduler.listGrades();
     },
     newGrade: async (client, name, perm) => {
-        let emoji;
+        let emoji = undefined;
         do {
             emoji = await client.emojis.cache.random()
+            console.log(emoji.name);
         }
-        while (!scheduler.getGradeByEmoji(emoji))
+        while (await scheduler.getGradeByEmoji(emoji))
         
         if (!(await scheduler.newGrade(name, emoji)))
             return false;

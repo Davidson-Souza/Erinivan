@@ -33,8 +33,11 @@ client.on('ready', async () => {
   for (let i in grades)
     txt += `${i}: ${grades[i]}\n`;
   if (channel) msg = await channel.send(`
+@IF pra ficar mais fácil marcar os outros, e egerenciar as threads e canais, esse bot vai colocar uma tag para cada matéria. 
 Use as reações para escolher a sua matéria:\n
+
 ${txt}
+Se tiver faltando matéria, só mandar uma dm para o bot com o nome da matéria, sem mais nada. Ele vai colocar exatamente o que você digitar
 `);
 
   client.user.setActivity(`Cala boca Pedro`);

@@ -48,11 +48,11 @@ module.exports =
 {
     next: async (connection) =>
     {
-        if(queue.length == 0){ dispatcher = false; return ; }
+        if(queue.length == 0){ if (dispatcher && dispatcher.destruct) dispatcher.destruct(); return ; }
         
-	const file = queue.pop();
-
-        if(file.includes("youtube"))
+	    const file = queue.pop();
+    
+        if (file.includes("youtube"))
         {
             stream = await ytdl(file, ydlsettings);
 
