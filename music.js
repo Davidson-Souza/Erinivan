@@ -48,7 +48,7 @@ module.exports =
 {
     next: async (connection) =>
     {
-        if(queue.length == 0){ if (dispatcher && dispatcher.destruct) dispatcher.destruct(); return ; }
+        if(queue?.length == 0){ if (dispatcher?.destruct) dispatcher.destruct(); return ; }
         
 	    const file = queue.pop();
     
