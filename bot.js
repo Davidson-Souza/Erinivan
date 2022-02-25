@@ -10,6 +10,7 @@ const client = new Discord.Client({ partials: ['MESSAGE', 'CHANNEL', 'REACTION',
 let msg;
 
 client.on('ready', async () => {
+  console.log("ready!")
   const channel_old = await client.channels.cache.find((channel, key) => {
     if (channel.name === "matérias") return channel;
   });
@@ -42,6 +43,7 @@ Se tiver faltando matéria, só mandar uma dm para o bot com o nome da matéria,
 
   client.user.setActivity(`Cala boca Pedro`);
 });
+let lastBaianoMessage = 0;
 
 // Create an event listener for messages
 client.on('message', async message => {
@@ -52,13 +54,50 @@ client.on('message', async message => {
     {
       return commands.updatePlaylist(message);
     }
+    if (message.content.startsWith("+")) {
+      const emoji = await commands.newGrade(client, message.content, Discord.Permissions.DEFAULT);
+      if(!emoji) return message.reply("Essa matéria já existe!");
+    
 
-    const emoji = await commands.newGrade(client, message.content, Discord.Permissions.DEFAULT);
-    if(!emoji) return message.reply("Essa matéria já existe!");
+      msg.edit(msg.content + `\n${emoji} - ${message.content}`);
+      return ;
+    }
+    if (message.author.id == "329678794086678529") {
+      if (message.content === "reset") {
+        console.log("Reseting roles");
+        const gradesJSON = commands.listGrades();
+        let grades = []
 
-    msg.edit(msg.content + `\n${emoji} - ${message.content}`);
+        for (let i in gradesJSON)
+          grades.push(gradesJSON[i]);
+        const chinfra = await client.guilds.cache.get("644248934834896946");
+        let roleid = []
 
-    return ;
+        chinfra.roles.cache.find((v, k) => {
+          if (grades.includes(v.name))
+            roleid.push(k);
+        })
+
+        chinfra.members.cache.each((user, v) => {
+          try {
+            roleid.forEach((v, k) => {
+              user.roles.remove(v);
+            })
+          } catch(e) {
+            console.log(e)
+          }
+        })
+      }
+    }
+  }
+
+  if (message.author.id == "483811121778786307") {
+	  if((lastBaianoMessage + 60000) >= Date.now()) {
+		  console.log("Flood")
+		  return message.delete();
+	  }
+	  lastBaianoMessage = Date.now();
+	  return;
   }
   commands.messageInc(message.author.username);
 
@@ -72,12 +111,12 @@ client.on('message', async message => {
     return ;
   }
   const { command, args } = parser.parseMessage(message.content);
-
+  
   if(command && commands[command])
     commands[command](message, args);
 });
 client.on("messageReactionAdd", (reaction, user) => {
-  if (reaction.message.author.id == client.user.id && msg.id === reaction.message.id)
+  if (reaction.message && reaction.message.author && (reaction.message.author.id == client.user.id && msg.id === reaction.message.id))
     commands.addGrade(reaction.emoji, user, client)
 })
 

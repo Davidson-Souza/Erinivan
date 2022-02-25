@@ -116,7 +116,8 @@ module.exports =
     },
     add: async (url, shuffle=false) =>
     {
-        if(url.length == 0 || url.indexOf("https://www.youtube.com/") < 0) return false;
+        try {
+	if(url.length == 0 || url.indexOf("https://www.youtube.com/") < 0) return false;
         if(url.indexOf("list") < 0)
             return queue.push(url);
         const playlist = await ytpl(url).catch((e) =>{ return false; });
@@ -132,6 +133,9 @@ module.exports =
                 [queue[i], queue[j]] = [queue[j], queue[i]];
             }
         }
+	}	catch(e){
+			console.log(e)
+		}
         return true;
     },
     lofi: () =>
