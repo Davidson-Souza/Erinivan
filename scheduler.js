@@ -27,7 +27,7 @@ cron.schedule('00 59 * * * *', () =>
 // Save each hour
 cron.schedule('00 59 * * * *', () =>
 {
-    console.log("Saving message count")
+    console.log("Saving grades")
     fs.writeFileSync("grades.json", JSON.stringify(internalValues.grades));
 });
 
@@ -66,6 +66,12 @@ try
 
 module.exports = 
 {
+    resetGrades: () => {
+        let newGrades = {binds:{}};
+        for (let grades in internalValues.grades.binds)
+            newGrades["binds"][grades] = internalValues.grades.binds[grades];
+        internalValues.grades = newGrades;
+    },
     unschedule: async (job) =>
     {   
         

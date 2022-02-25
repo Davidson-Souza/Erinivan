@@ -124,6 +124,9 @@ module.exports =
     listGrades: () => {
         return scheduler.listGrades();
     },
+    resetGrades: () => {
+        return scheduler.resetGrades();
+    },
     newGrade: async (client, name, perm) => {
         let emoji = undefined;
         do {

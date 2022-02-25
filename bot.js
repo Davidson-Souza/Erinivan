@@ -23,10 +23,10 @@ client.on('ready', async () => {
         id: client.guilds.cache.get("644248934834896946").roles.everyone,
         deny:[Discord.Permissions.FLAGS.VIEW_CHANNEL, Discord.Permissions.FLAGS.SEND_MESSAGES]
       },
-      {
+      /*{
         id: IF.id,
         allow: [Discord.Permissions.FLAGS.VIEW_CHANNEL]
-      }
+      }*/
     ]
   })
   let txt = "";
@@ -34,11 +34,11 @@ client.on('ready', async () => {
   for (let i in grades)
     txt += `${i} - ${grades[i]}\n`;
   if (channel) msg = await channel.send(`
-@IF pra ficar mais fácil marcar os outros, e egerenciar as threads e canais, esse bot vai colocar uma tag para cada matéria. 
+  <${IF}> pra ficar mais fácil marcar os outros, e egerenciar as threads e canais, esse bot vai colocar uma tag para cada matéria. 
 Use as reações para escolher a sua matéria:\n
+Se tiver faltando matéria, só mandar uma dm para o bot com um \`+\` e o nome da matéria. Ele vai colocar exatamente o que você digitar. Exemplo: \`+Análise e Projeto de Algorítmos\`
 
 ${txt}
-Se tiver faltando matéria, só mandar uma dm para o bot com o nome da matéria, sem mais nada. Ele vai colocar exatamente o que você digitar
 `);
 
   client.user.setActivity(`Cala boca Pedro`);
@@ -55,6 +55,7 @@ client.on('message', async message => {
       return commands.updatePlaylist(message);
     }
     if (message.content.startsWith("+")) {
+      message.content = message.content.replace("+", "");
       const emoji = await commands.newGrade(client, message.content, Discord.Permissions.DEFAULT);
       if(!emoji) return message.reply("Essa matéria já existe!");
     
@@ -67,7 +68,6 @@ client.on('message', async message => {
         console.log("Reseting roles");
         const gradesJSON = commands.listGrades();
         let grades = []
-
         for (let i in gradesJSON)
           grades.push(gradesJSON[i]);
         const chinfra = await client.guilds.cache.get("644248934834896946");
@@ -87,6 +87,7 @@ client.on('message', async message => {
             console.log(e)
           }
         })
+        return commands.resetGrades();
       }
     }
   }
