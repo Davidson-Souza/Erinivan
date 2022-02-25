@@ -32,10 +32,10 @@ client.on('ready', async () => {
           id: client.guilds.cache.get("644248934834896946").roles.everyone,
           deny:[Discord.Permissions.FLAGS.VIEW_CHANNEL, Discord.Permissions.FLAGS.SEND_MESSAGES]
         },
-        //{
-        //  id: IF.id,
-        //  allow: [Discord.Permissions.FLAGS.VIEW_CHANNEL]
-        //}
+        {
+          id: IF.id,
+          allow: [Discord.Permissions.FLAGS.VIEW_CHANNEL]
+        }
       ]
     })
     let txt = "";
