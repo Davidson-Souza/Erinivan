@@ -5,6 +5,7 @@ const Discord   = require('discord.js');
 const parser    = require("./parser.js");
 const commands  = require("./commands");
 const fs        = require("fs");
+const cron      = require("node-cron");
 
 // Create an instance of a Discord client
 const client = new Discord.Client({ partials: ['MESSAGE', 'CHANNEL', 'REACTION', 'USER'] });
@@ -12,6 +13,17 @@ let msg;
 
 client.on('ready', async () => {
   console.log("ready!")
+
+  const chinfra = await client.guilds.cache.get("644248934834896946");
+  cron.schedule("* 5 * * *", async () => {
+    try {     
+      const channel = await client.channels.fetch("867827108118265887", {force:true});
+      channel?.send("Lembrete diário de que o Zé não vai dar compiladores"); 
+    } catch(e) {
+      console.log(e);
+    }
+  });
+
   try {
     msg = fs.readFileSync("msg").toString();
     const channel = await client.channels.cache.find((channel, key) => {
@@ -25,7 +37,7 @@ client.on('ready', async () => {
     });
     if(channel_old) channel_old.delete();
     const IF = await client.guilds.cache.get("644248934834896946").roles.cache.find((v, k) => {if (v.name == "IF") return v; });
-  
+      
     const channel = await client.guilds.cache.get("644248934834896946").channels.create("Matérias", {
       permissionOverwrites: [
         {
